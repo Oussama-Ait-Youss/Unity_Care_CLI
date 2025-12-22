@@ -3,6 +3,8 @@
     Système de gestion hospitalière en ligne de commande (CLI).
 
     Unity Care CLI est une refonte complète de la logique métier de gestion clinique, passant d'une approche procédurale à une Architecture Orientée Objet (OOP) stricte sous PHP 8. Ce projet sert d'outil interne pour administrer rapidement les départements, les médecins et les patients via une interface console interactive.
+     
+
 
 
 ## Table des Matières
@@ -148,11 +150,11 @@ Le projet respecte les principes SOLID et les standards modernes de PHP :
  ## Auteur
 
     Oussama Ait Youss
-    
+
        Role : Full Stack Developer Student @ YouCode
-    
+
        Stack : PHP, MySQL, Linux, Docker
-    
+
        --------------------------------------------------------------
-    
+
        <?php echo "Ce projet a été réalisé dans le cadre d'un brief pédagogique visant à maîtriser la POO en PHP sans framework.";
