@@ -7,12 +7,16 @@ abstract class Person extends BaseModel {
     protected string $prenom;
     protected string $telephone;
     protected string $email;
+    protected string $dateNaissance;
+    protected string $adresse;
 
-    public function __construct(string $nom, string $prenom, string $email, string $telephone) {
+    public function __construct(string $nom, string $prenom, string $email, string $telephone,string $dateNaissance,string $adresse) {
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->email = $email;
         $this->telephone = $telephone;
+        $this->dateNaissance = $dateNaissance;
+        $this->adresse = $adresse;
     }
 
     
@@ -36,6 +40,8 @@ abstract class Person extends BaseModel {
     public function setNom(string $nom): void {
         $this->nom = $nom;
     }
+    public function getDateNaissance() { return $this->dateNaissance; }
+    public function getAdresse() { return $this->adresse; }
     
     
 }
