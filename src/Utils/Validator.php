@@ -1,6 +1,5 @@
 <?php
 
-
     class Validator{
         // Regex pour la validation
         private static $strRegex = "/^[a-zA-Z\s]+$/";

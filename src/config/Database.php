@@ -3,10 +3,10 @@
     // classe de Database pour cree la connexion a la base de donne
     class Database{
         // variable de connexion
-        private $HOST;
-        private $DB;
-        private $USER;
-        private $PASS;
+        private $HOST = 'db';
+        private $DB = 'UnityClinic_CLI';
+        private $USER = 'root';
+        private $PASS = 'root';
         private $conn;
 
         // intialization des donnes de la connexion
