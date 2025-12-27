@@ -157,7 +157,7 @@ function handlePatients(Patient $patModel) {
         }
     }
 }
-
+// afficher les statistiques
 function showStatistics($patModel, $docModel, $deptModel) {
     echo "\n--- STATISTIQUES ---\n";
 
