@@ -2,27 +2,20 @@
 
 class Patient extends Person {
 
-    protected static $table = 'patients';
+    protected function getTableName(): string {
+        return "Patients";
+    }
 
-  
-    public function save() {
-        $db = Database::getInstance()->getConnection();
+    protected function fromArray($arr): object {
+        $patient = new Patient($this->conn);
+        return $patient;
+    }
 
-        
-        $sql = "INSERT INTO " . self::$table . " 
-                (first_name, last_name, email, phone, birth_date, address) 
-                VALUES 
-                (:prenom, :nom, :email, :telephone, :date_naissance, :adresse)";
-        
-        $stmt = $db->prepare($sql);
+    protected function toArray(): array {
+        return [];
+    }
 
-        return $stmt->execute([
-            ':prenom'         => $this->prenom,
-            ':nom'            => $this->nom,
-            ':email'          => $this->email,
-            ':telephone'      => $this->telephone,
-            ':date_naissance' => $this->dateNaissance, 
-            ':adresse'        => $this->adresse
-        ]);
+    public function register($data) {
+        return $this->insert($data);
     }
 }
