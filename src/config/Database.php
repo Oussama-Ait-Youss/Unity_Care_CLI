@@ -1,32 +1,29 @@
 <?php
 
-    // classe de Database pour cree la connexion a la base de donne
-    class Database{
-        // variable de connexion
-        private $HOST = 'db';
-        private $DB = 'UnityClinic_CLI';
-        private $USER = 'root';
-        private $PASS = 'root';
-        private $conn;
+class Database
+{
+    private static $host = "db";
+    private static $user = "root";
+    private static $password = "root";
+    private static $db_name = "UnityClinic_CLI";
+    private static PDO $conn;
 
-        // intialization des donnes de la connexion
-        public function __construct($HOST,$DB,$USER,$PASS){
-            $this->HOST = $HOST;
-            $this->DB = $DB;
-            $this->USER = $USER;
-            $this->PASS = $PASS;
-        }
-        
-        // creer la connexion
-        public function Connect(){
-            try{
 
-                $this->conn = new PDO("mysql:host=$this->HOST;dbname=$this->DB",$this->USER,$this->PASS);
+    public static function getConnection(): PDO
+    {
 
-            }catch(PDOException $e){
-                echo "Error de Connexion..." . $e->getMessage();
-                exit;
-            }
-            return $this->conn;
+        try {
+
+            self::$conn = new PDO(
+                "mysql:host=" . self::$host . ";dbname=" . self::$db_name,
+                self::$user,
+                self::$password,
+            );
+            self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            echo "Connection Successful\n";
+            return self::$conn;
+        } catch (Exception $er) {
+            throw new Exception("Error while creating Connection" . $er->getMessage(), 1);
         }
     }
+}

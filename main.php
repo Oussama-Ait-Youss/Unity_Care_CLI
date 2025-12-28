@@ -1,5 +1,6 @@
 <?php
 
+// 1. Require all necessary files
 require_once __DIR__ .  "/src/config/Database.php";
 require_once __DIR__ .  "/src/Utils/Validator.php";
 require_once __DIR__ .  "/src/Models/BaseModel.php";
@@ -8,6 +9,7 @@ require_once __DIR__ .  "/src/Models/Doctor.php";
 require_once __DIR__ .  "/src/Models/Patient.php";
 require_once __DIR__ .  "/src/Models/Department.php"; 
 
+// 2. Helper function to get input from terminal
 function input($prompt) {
     echo $prompt . ": ";
     return trim(fgets(STDIN));
@@ -137,7 +139,7 @@ function handlePatients(Patient $patModel) {
 
     if ($opt == '1') {
         $pats = $patModel->getAll();
-        foreach($pats as $p) { echo $p . "\n"; }
+        foreach($pats as $p) { echo $p . "\n"; } // Ensure Patient has __toString
 
     } elseif ($opt == '2') {
         $data = [
@@ -157,7 +159,7 @@ function handlePatients(Patient $patModel) {
         }
     }
 }
-// afficher les statistiques
+
 function showStatistics($patModel, $docModel, $deptModel) {
     echo "\n--- STATISTIQUES ---\n";
 

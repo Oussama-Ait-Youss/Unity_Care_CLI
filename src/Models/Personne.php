@@ -1,47 +1,70 @@
 <?php
+require_once __DIR__ . "/BaseModel.php";
+abstract class Person extends BaseModel
+{
+    protected ?string $first_name;
+    protected ?string $last_name;
+    protected ?string $phone;
+    protected ?string $email;
 
 
-abstract class Person extends BaseModel {
-    
-    protected string $nom;
-    protected string $prenom;
-    protected string $telephone;
-    protected string $email;
-    protected string $dateNaissance;
-    protected string $adresse;
+    public function __construct(
+        PDO $db,
+        $first_name = null,
+        $last_name = null,
+        $phone = null,
+        $email = null,
+    ) {
 
-    public function __construct(string $nom, string $prenom, string $email, string $telephone,string $dateNaissance,string $adresse) {
-        $this->nom = $nom;
-        $this->prenom = $prenom;
+        $this->first_name = $first_name;
+        $this->last_name = $last_name;
+        $this->phone = $phone;
         $this->email = $email;
-        $this->telephone = $telephone;
-        $this->dateNaissance = $dateNaissance;
-        $this->adresse = $adresse;
+        parent::__construct($db);
     }
 
-    
-    public function getNom(): string {
-        return $this->nom;
+
+    public function getFirstName(): string
+    {
+
+        return $this->first_name;
     }
 
-    public function getPrenom(): string {
-        return $this->prenom;
+    public function setFirstName($fname)
+    {
+        $this->first_name = $fname;
     }
 
-    public function getEmail(): string {
+    public function getLastName(): string
+    {
+
+        return $this->last_name;
+    }
+
+    public function setLastName($lname)
+    {
+        $this->last_name = $lname;
+    }
+
+    public function getPhone(): string
+    {
+
+        return $this->phone;
+    }
+
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    }
+
+    public function getEmail(): string
+    {
+
         return $this->email;
     }
 
-    public function getTelephone(): string {
-        return $this->telephone;
+    public function setEmail($email)
+    {
+        $this->email = $email;
     }
-
-
-    public function setNom(string $nom): void {
-        $this->nom = $nom;
-    }
-    public function getDateNaissance() { return $this->dateNaissance; }
-    public function getAdresse() { return $this->adresse; }
-    
-    
 }

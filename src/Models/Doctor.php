@@ -89,22 +89,3 @@ class Doctor extends Person
         return "First Name: $this->first_name | Last Name: $this->last_name | Email: $this->email ";
     }
 }
-
-// $db =  new Database();
-
-
-
-// $d = new Doctor(
-//     Database::getConnection(),
-
-//     "Hajar",
-//     "ELMouhili",
-//     "0666031001",
-//     "hajar@tbiba.ma",
-//     1,
-//     "7ri9 rass"
-// );
-
-
-// echo $d;
-// $d->getAll();
