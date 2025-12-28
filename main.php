@@ -23,9 +23,6 @@ try {
     $deptModel = new Department($db);
 
     do {
-        // Clear screen (optional)
-        // system('clear'); 
-        
         echo "\n=== Unity Care CLI ===\n";
         echo "1. Gérer les patients\n";
         echo "2. Gérer les médecins\n";
@@ -63,37 +60,34 @@ try {
 }
 
 // --------------------------------------------------------
-// FUNCTIONS
+// HANDLER FUNCTIONS (Now with UPDATE)
 // --------------------------------------------------------
 
 function handleDepartments(Department $deptModel) {
     echo "\n--- GESTION DES DÉPARTEMENTS ---\n";
-    echo "1. Lister\n2. Ajouter\n3. Supprimer\n4. Retour\n";
+    // Added option 3 for Modifier
+    echo "1. Lister\n2. Ajouter\n3. Modifier\n4. Supprimer\n5. Retour\n";
     $opt = input("Choix");
 
     if ($opt == '1') {
         // LIST
         $depts = $deptModel->getAll();
-
         if (empty($depts)) {
             echo "Aucun département trouvé.\n";
         } else {
-            // Define format: ID (4 chars) | Name (20 chars)
             $mask = "| %-4s | %-20s |\n";
             $line = "+------+----------------------+\n";
-
             echo $line;
             printf($mask, 'ID', 'Nom du Département');
             echo $line;
-            
             foreach ($depts as $d) {
-                // Assuming Department has getName() or public property $name
                 printf($mask, $d->id ?? 0, $d->getName()); 
             }
             echo $line;
         }
 
     } elseif ($opt == '2') {
+        // ADD
         $name = input("Nom du département");
         if (Validator::isNotEmtpy($name)) {
             $deptModel->create($name);
@@ -103,6 +97,22 @@ function handleDepartments(Department $deptModel) {
         }
 
     } elseif ($opt == '3') {
+        // UPDATE (New functionality)
+        $id = input("ID du département à modifier");
+        if (is_numeric($id)) {
+            $name = input("Nouveau nom du département");
+            if (Validator::isNotEmtpy($name)) {
+                // Pass array with key matching DB column 'name'
+                $deptModel->update(['name' => $name], $id);
+            } else {
+                echo "Erreur: Le nom est vide.\n";
+            }
+        } else {
+            echo "ID invalide.\n";
+        }
+
+    } elseif ($opt == '4') {
+        // DELETE
         $id = input("ID du département à supprimer");
         if (is_numeric($id)) {
             $deptModel->delete($id);
@@ -114,23 +124,20 @@ function handleDepartments(Department $deptModel) {
 
 function handleDoctors(Doctor $docModel) {
     echo "\n--- GESTION DES MÉDECINS ---\n";
-    echo "1. Lister\n2. Ajouter\n3. Retour\n";
+    echo "1. Lister\n2. Ajouter\n3. Modifier\n4. Retour\n";
     $opt = input("Choix");
 
     if ($opt == '1') {
+        // LIST
         $docs = $docModel->getAll();
-
         if (empty($docs)) {
             echo "Aucun médecin trouvé.\n";
         } else {
-            // Layout: ID | First Name | Last Name | Speciality
             $mask = "| %-4s | %-12s | %-12s | %-15s |\n";
             $line = "+------+--------------+--------------+-----------------+\n";
-
             echo $line;
             printf($mask, 'ID', 'Prénom', 'Nom', 'Spécialité');
             echo $line;
-
             foreach($docs as $d) { 
                 printf($mask, 
                     $d->id ?? 0, 
@@ -143,44 +150,67 @@ function handleDoctors(Doctor $docModel) {
         }
 
     } elseif ($opt == '2') {
+        // ADD
         $data = [
             'first_name' => input("Prénom"),
             'last_name'  => input("Nom"),
             'email'      => input("Email"),
             'phone'      => input("Téléphone"),
-            'speciality' => input("Spécialité"),
-            'department_id' => input("ID Département")
+            'specialization' => input("Spécialité"), // Key must match DB column
+            'dept_id' => input("ID Département")     // Key must match DB column
         ];
 
-        // Basic Validation
         if (Validator::validateEmail($data['email']) && Validator::validatePhone($data['phone'])) {
             $docModel->insert($data); 
             echo "Médecin ajouté!\n";
         } else {
-            echo "Données invalides (Email ou Téléphone incorrect).\n";
+            echo "Données invalides.\n";
+        }
+
+    } elseif ($opt == '3') {
+        // UPDATE (New functionality)
+        $id = input("ID du médecin à modifier");
+        
+        if (is_numeric($id)) {
+            echo "Entrez les nouvelles informations:\n";
+            // For simplicity in CLI, we ask for all fields again
+            $data = [
+                'first_name' => input("Prénom"),
+                'last_name'  => input("Nom"),
+                'email'      => input("Email"),
+                'phone'      => input("Téléphone"),
+                'specialization' => input("Spécialité"),
+                'dept_id' => input("ID Département")
+            ];
+
+            if (Validator::validateEmail($data['email']) && Validator::validatePhone($data['phone'])) {
+                $docModel->update($data, $id);
+                // BaseModel prints "update successfully.."
+            } else {
+                echo "Données invalides.\n";
+            }
+        } else {
+            echo "ID invalide.\n";
         }
     }
 }
 
 function handlePatients(Patient $patModel) {
     echo "\n--- GESTION DES PATIENTS ---\n";
-    echo "1. Lister\n2. Ajouter\n3. Retour\n";
+    echo "1. Lister\n2. Ajouter\n3. Modifier\n4. Retour\n";
     $opt = input("Choix");
 
     if ($opt == '1') {
+        // LIST
         $pats = $patModel->getAll(); 
-        
         if (empty($pats)) {
             echo "Aucun patient trouvé.\n";
         } else {
-            // Layout: ID | First Name | Last Name | Phone
             $mask = "| %-4s | %-12s | %-12s | %-15s |\n";
             $line = "+------+--------------+--------------+-----------------+\n";
-
             echo $line;
             printf($mask, 'ID', 'Prénom', 'Nom', 'Téléphone');
             echo $line;
-
             foreach($pats as $p) { 
                 printf($mask, 
                     $p->id ?? 0, 
@@ -193,6 +223,7 @@ function handlePatients(Patient $patModel) {
         }
 
     } elseif ($opt == '2') {
+        // ADD
         $data = [
             'first_name' => input("Prénom"),
             'last_name'  => input("Nom"),
@@ -208,12 +239,36 @@ function handlePatients(Patient $patModel) {
         } else {
             echo "Format de date invalide.\n";
         }
+
+    } elseif ($opt == '3') {
+        // UPDATE (New functionality)
+        $id = input("ID du patient à modifier");
+        
+        if (is_numeric($id)) {
+            echo "Entrez les nouvelles informations:\n";
+            $data = [
+                'first_name' => input("Prénom"),
+                'last_name'  => input("Nom"),
+                'email'      => input("Email"),
+                'phone'      => input("Téléphone"),
+                'birth_date' => input("Date de naissance (YYYY-MM-DD)"),
+                'address'    => input("Adresse")
+            ];
+
+            if(Validator::isValidDate($data['birth_date']) && Validator::validateEmail($data['email'])) {
+                $patModel->update($data, $id);
+                // BaseModel prints "update successfully.."
+            } else {
+                echo "Données invalides (Date ou Email).\n";
+            }
+        } else {
+            echo "ID invalide.\n";
+        }
     }
 }
 
 function showStatistics($patModel, $docModel, $deptModel) {
     echo "\n--- STATISTIQUES ---\n";
-    // We can also format this nicely
     echo "+--------------------+-------+\n";
     echo "| Catégorie          | Total |\n";
     echo "+--------------------+-------+\n";

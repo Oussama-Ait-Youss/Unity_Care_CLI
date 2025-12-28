@@ -105,7 +105,6 @@ abstract class BaseModel
 
         $stmt = $this->conn->prepare($query);
         
-        // Execute using just the values from the data array
         if ($stmt->execute(array_values($data))) {
             echo "update successfully..";
         } else {

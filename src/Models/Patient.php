@@ -7,8 +7,7 @@ class Patient extends Person {
     }
 
     protected function fromArray($arr): object {
-        // We create the object AND pass the data from the database array ($arr)
-        // Ensure the array keys (like 'first_name') match your Database columns exactly!
+      
         $patient = new Patient(
             $this->conn,
             $arr['first_name'] ?? null,
@@ -17,12 +16,10 @@ class Patient extends Person {
             $arr['email'] ?? null
         );
 
-        // Manually set the ID (since it's not in the constructor usually)
         if (isset($arr['id'])) {
             $patient->id = $arr['id'];
         }
 
-        // Return the FILLED object, not an empty one
         return $patient;
     }
 
@@ -33,7 +30,6 @@ class Patient extends Person {
     public function register($data) {
         return $this->insert($data);
     }
-    // Ajoutez ceci à la fin de votre classe Patient, avant l'accolade fermante "}"
     public function __toString()
     {
         return sprintf(
