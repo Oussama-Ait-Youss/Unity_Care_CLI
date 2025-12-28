@@ -23,7 +23,8 @@ try {
     $deptModel = new Department($db);
 
     do {
-       
+        // Clear screen (optional)
+        // system('clear'); 
         
         echo "\n=== Unity Care CLI ===\n";
         echo "1. Gérer les patients\n";
@@ -61,10 +62,9 @@ try {
     echo "Erreur Critique: " . $e->getMessage();
 }
 
-
-
-
-
+// --------------------------------------------------------
+// FUNCTIONS
+// --------------------------------------------------------
 
 function handleDepartments(Department $deptModel) {
     echo "\n--- GESTION DES DÉPARTEMENTS ---\n";
@@ -74,14 +74,24 @@ function handleDepartments(Department $deptModel) {
     if ($opt == '1') {
         // LIST
         $depts = $deptModel->getAll();
-        echo "\n+----------------------+\n";
-        echo "| Nom du Département   |\n";
-        echo "+----------------------+\n";
-        foreach ($depts as $d) {
-            // Assuming the object has __toString or public properties
-            echo $d . "\n"; 
+
+        if (empty($depts)) {
+            echo "Aucun département trouvé.\n";
+        } else {
+            // Define format: ID (4 chars) | Name (20 chars)
+            $mask = "| %-4s | %-20s |\n";
+            $line = "+------+----------------------+\n";
+
+            echo $line;
+            printf($mask, 'ID', 'Nom du Département');
+            echo $line;
+            
+            foreach ($depts as $d) {
+                // Assuming Department has getName() or public property $name
+                printf($mask, $d->id ?? 0, $d->getName()); 
+            }
+            echo $line;
         }
-        echo "+----------------------+\n";
 
     } elseif ($opt == '2') {
         $name = input("Nom du département");
@@ -109,7 +119,28 @@ function handleDoctors(Doctor $docModel) {
 
     if ($opt == '1') {
         $docs = $docModel->getAll();
-        foreach($docs as $d) { echo $d . "\n"; }
+
+        if (empty($docs)) {
+            echo "Aucun médecin trouvé.\n";
+        } else {
+            // Layout: ID | First Name | Last Name | Speciality
+            $mask = "| %-4s | %-12s | %-12s | %-15s |\n";
+            $line = "+------+--------------+--------------+-----------------+\n";
+
+            echo $line;
+            printf($mask, 'ID', 'Prénom', 'Nom', 'Spécialité');
+            echo $line;
+
+            foreach($docs as $d) { 
+                printf($mask, 
+                    $d->id ?? 0, 
+                    $d->getFirstName(), 
+                    $d->getLastName(), 
+                    $d->getSpecialization() ?? 'N/A'
+                ); 
+            }
+            echo $line;
+        }
 
     } elseif ($opt == '2') {
         $data = [
@@ -123,7 +154,6 @@ function handleDoctors(Doctor $docModel) {
 
         // Basic Validation
         if (Validator::validateEmail($data['email']) && Validator::validatePhone($data['phone'])) {
-            // Note: You need to implement an 'insert' wrapper in Doctor or use generic insert
             $docModel->insert($data); 
             echo "Médecin ajouté!\n";
         } else {
@@ -138,8 +168,29 @@ function handlePatients(Patient $patModel) {
     $opt = input("Choix");
 
     if ($opt == '1') {
-        $pats = $patModel->getAll();
-        foreach($pats as $p) { echo $p . "\n"; } // Ensure Patient has __toString
+        $pats = $patModel->getAll(); 
+        
+        if (empty($pats)) {
+            echo "Aucun patient trouvé.\n";
+        } else {
+            // Layout: ID | First Name | Last Name | Phone
+            $mask = "| %-4s | %-12s | %-12s | %-15s |\n";
+            $line = "+------+--------------+--------------+-----------------+\n";
+
+            echo $line;
+            printf($mask, 'ID', 'Prénom', 'Nom', 'Téléphone');
+            echo $line;
+
+            foreach($pats as $p) { 
+                printf($mask, 
+                    $p->id ?? 0, 
+                    $p->getFirstName(), 
+                    $p->getLastName(), 
+                    $p->getPhone() ?? 'N/A'
+                );
+            }
+            echo $line;
+        }
 
     } elseif ($opt == '2') {
         $data = [
@@ -162,8 +213,12 @@ function handlePatients(Patient $patModel) {
 
 function showStatistics($patModel, $docModel, $deptModel) {
     echo "\n--- STATISTIQUES ---\n";
-
-    echo "Total Patients: " . count($patModel->getAll()) . "\n";
-    echo "Total Médecins: " . count($docModel->getAll()) . "\n";
-    echo "Total Départements: " . count($deptModel->getAll()) . "\n";
+    // We can also format this nicely
+    echo "+--------------------+-------+\n";
+    echo "| Catégorie          | Total |\n";
+    echo "+--------------------+-------+\n";
+    printf("| %-18s | %-5s |\n", "Patients", count($patModel->getAll()));
+    printf("| %-18s | %-5s |\n", "Médecins", count($docModel->getAll()));
+    printf("| %-18s | %-5s |\n", "Départements", count($deptModel->getAll()));
+    echo "+--------------------+-------+\n";
 }
