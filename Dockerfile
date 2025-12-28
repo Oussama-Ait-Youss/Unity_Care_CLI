@@ -3,7 +3,8 @@ FROM php:8.2-apache
 RUN apt-get update && apt-get upgrade -y
 
 # Install PHP extensions
-RUN docker-php-ext-install mysqli pdo_mysql
+# RUN docker-php-ext-install mysqli pdo_mysql
+RUN docker-php-ext-install pdo pdo_mysql
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
